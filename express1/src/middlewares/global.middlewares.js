@@ -16,7 +16,7 @@ const validUser = async (req, res, next) => {
     const user = await userService.findByIdService(id)
 
     if (!user) {
-        return res.status(400).send({ message: "Usuário não enconstrado" })
+        return res.status(400).send({ message: "Usuário não encontrado" })
     }
 
     req.id = id

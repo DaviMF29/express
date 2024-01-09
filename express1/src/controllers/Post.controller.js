@@ -11,10 +11,10 @@ const createPost = async (req, res, next) => {
         const newPost = await postService.create({ text, id_user, username });
 
         return res.status(201).json({
-            id_user: newPost.id_user, 
+            id_user: newPost.id_user,
             username: newPost.username,
-            id: newPost._id, 
-            text: newPost.text 
+            id: newPost._id,
+            text: newPost.text
         });
     } catch (error) {
         console.error("Erro durante a postagem:", error);
@@ -39,11 +39,11 @@ const findAllPosts = async (req, res) => {
 
 const findByUsername = async (req, res) => {
     try {
-        const { username } = req.body; 
+        const { username } = req.body;
         if (!username) {
             return res.status(400).send({ message: 'O campo "username" é obrigatório no corpo da requisição.' });
         }
-        const body = { username }; 
+        const body = { username };
         const userPosts = await postService.findByUsernameService(body);
         if (!userPosts || userPosts.length === 0) {
             return res.status(404).send({ message: `Não há posts para o usuário ${username}` });
@@ -54,6 +54,7 @@ const findByUsername = async (req, res) => {
         res.status(500).send({ message: "Ocorreu um erro ao buscar os posts do usuário por nome de usuário" });
     }
 };
+
 
 const addCommentToPost = async (req, res) => {
     try {
@@ -92,8 +93,8 @@ const toggleLikeOnPost = async (req, res) => {
         }
 
         if (liked) {
-            post.likes += 1; 
-            post.liked = true; 
+            post.likes += 1;
+            post.liked = true;
         }
 
         await post.save();
@@ -107,8 +108,4 @@ const toggleLikeOnPost = async (req, res) => {
 
 
 
-
-
-
-
-module.exports = { createPost, findAllPosts, findByUsername, addCommentToPost,toggleLikeOnPost };
+module.exports = { createPost, findAllPosts, findByUsername, addCommentToPost, toggleLikeOnPost };

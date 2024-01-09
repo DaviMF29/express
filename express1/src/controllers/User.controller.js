@@ -51,7 +51,6 @@ const findAllUsers = async (req, res) => {
 const findById = async (req, res) => {
     try {
         const user = req.user;
-
         res.send(user);
     } catch (error) {
         console.error('Erro ao buscar usuário por ID:', error);
@@ -76,17 +75,53 @@ const update = async (req, res) => {
         const { name, username, email } = req.body;
 
         if (!name && !username && !email) {
-            return res.status(400).send({ message: "Pelo menos um campo (name, username ou email) precisa ser alterado" });
+            return res.status(400).send({ message: "Informe pelo menos um campo para atualização" });
         }
 
-        const { id } = req;
-        await userService.updateService(id, name, username, email);
+        const id = req.params.id;
 
-        res.send({ message: "Usuário atualizado com sucesso" });
-    } catch (error) {
-        console.error('Erro durante a atualização do usuário:', error);
+        await userService.updateService(
+            id,
+            { name, username, email }
+        );
+
+        res.send({ message: "Usuário atualizado com sucesso!" });
+    } catch (err) {
+        console.error('Erro durante a atualização do usuário:', err);
         res.status(500).send({ message: "Ocorreu um erro ao atualizar o usuário" });
     }
 };
 
-module.exports = { create, findAllUsers, findById, findByUsername, update };
+const addFriend = async (req, res) => {
+    try {
+        const { userId, friendId } = req.body;
+
+        const user = await userService.findByIdService(userId);
+        const friend = await userService.findByIdService(friendId)
+
+        if (!user) {
+            return res.status(404).send({ message: 'Usuário não encontrado.' });
+        }
+
+        const isFriendAlreadyAdded = user.friends.includes(friendId);
+        if (isFriendAlreadyAdded) {
+            return res.status(400).send({ message: 'Este usuário já é seu amigo.' });
+        }
+
+        user.friends.push(friend);
+        console.log(user)
+
+        await user.save();
+
+        res.status(201).send({ message: 'Amigo adicionado com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao adicionar o amigo:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao adicionar o amigo.', error: error.message });
+    }
+};
+
+
+
+
+
+module.exports = { create, findAllUsers, findById, findByUsername, update, addFriend };

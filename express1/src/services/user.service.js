@@ -17,22 +17,14 @@ const findByUsernameService = (username) => {
     return User.findOne({ username: { $regex: new RegExp(username, 'i') } });
 };
 
-const updateService = (id,
-    name,
-    username,
-    email) => {
-
+const updateService = (id, newData) => {
     try {
-        return User.findOneAndUpdate({ _id: id }, {
-            name,
-            username,
-            email
-        })
-    }
-    catch (error) {
+        return User.findOneAndUpdate({ _id: id }, newData, { new: true });
+    } catch (error) {
         throw new Error('Erro ao atualizar o usuário');
     }
-}
+};
+
 
 module.exports = {
     create,
