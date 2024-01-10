@@ -37,6 +37,27 @@ const findAllPosts = async (req, res) => {
     }
 };
 
+const findById = async (req, res) => {
+    try {
+        const { postId } = req.body;
+
+        if (!postId) {
+            return res.status(400).send({ message: 'O campo "postId" é obrigatório no corpo da requisição.' });
+        }
+
+        const post = await postService.findByIdService(postId);
+
+        if (!post) {
+            return res.status(404).send({ message: 'Postagem não encontrada.' });
+        }
+
+        res.send(post);
+    } catch (error) {
+        console.error('Erro ao buscar postagem por ID:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao buscar a postagem por ID.' });
+    }
+};
+
 const findByUsername = async (req, res) => {
     try {
         const { username } = req.body;
@@ -108,4 +129,4 @@ const toggleLikeOnPost = async (req, res) => {
 
 
 
-module.exports = { createPost, findAllPosts, findByUsername, addCommentToPost, toggleLikeOnPost };
+module.exports = { createPost, findAllPosts,findById, findByUsername, addCommentToPost, toggleLikeOnPost };
