@@ -26,7 +26,12 @@ const userSchema = new mongoose.Schema({
                 type: String 
             }
         }
-    ]
+    ],
+    favoritePosts:[{
+        posts :{
+            type:Object
+        }
+    }]
 });
 
 userSchema.pre("save", async function(next) {
