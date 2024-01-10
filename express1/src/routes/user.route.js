@@ -8,6 +8,5 @@ route.get("/:id", validId, validUser, userController.findById);
 route.patch("/:id", userController.update);
 route.get("/search/:username",validUsername, userController.findByUsername);
 route.post("/adicionar",userController.addFriend)
-route.post("/favorites",userController.addPostToFavorites)
 
 module.exports = route;

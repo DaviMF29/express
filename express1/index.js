@@ -4,7 +4,8 @@ const dotenv = require("dotenv")
 
 const userRoute = require('./src/routes/user.route') 
 const authRoute = require('./src/routes/auth.route')
-const postRoute = require('./src/routes/post.route') 
+const postRoute = require('./src/routes/post.route')
+const userInteractionRoute = require('./src/routes/userinteracion.route') 
 
 dotenv.config()
 
@@ -16,5 +17,6 @@ app.use(express.json())
 app.use("/user",userRoute)
 app.use("/auth",authRoute)
 app.use("/post",postRoute)
+app.use("/interaction",userInteractionRoute)
 
 app.listen(port,()=> console.log(`Servidor rodando na porta ${port}`))
