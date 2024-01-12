@@ -2,6 +2,7 @@ const postService = require("../services/post.service");
 
 const createPost = async (req, res, next) => {
     try {
+        
         const { text, id_user, username } = req.body;
 
         if (!text || !id_user) {
