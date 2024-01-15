@@ -25,11 +25,10 @@ const updateService = (id, newData) => {
     }
 };
 
-
 module.exports = {
     create,
     findAllServices,
     findByIdService,
     findByUsernameService,
-    updateService
+    updateService,
 };

@@ -27,4 +27,23 @@ const addPostToFavorites = async (req, res) => {
     }
 };
 
-module.exports = {addPostToFavorites}
+const findAllFriends = async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const user = await userService.findByIdService(userId);
+
+        if (!user) {
+            return res.status(404).send({ message: 'Usuário não encontrado.' });
+        }
+
+        const friends = user.friends;
+
+        return res.status(200).send({ friends });
+    } catch (error) {
+        console.error('Erro ao encontrar amigos:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao buscar os amigos. Por favor, tente novamente mais tarde.' });
+    }
+};
+
+
+module.exports = {addPostToFavorites,findAllFriends}
