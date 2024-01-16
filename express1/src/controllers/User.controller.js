@@ -70,7 +70,7 @@ const findByUsername = async (req, res) => {
     }
 };
 
-const update = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const { name, username, email } = req.body;
 
@@ -95,33 +95,74 @@ const update = async (req, res) => {
 const addFriend = async (req, res) => {
     try {
         const { userId, friendId } = req.body;
+        const result = await userService.addFriendService(userId, friendId);
 
-        const user = await userService.findByIdService(userId);
-        const friend = await userService.findByIdService(friendId)
-
-        if (!user) {
-            return res.status(404).send({ message: 'Usuário não encontrado.' });
-        }
-
-        const isFriendAlreadyAdded = user.friends.includes(friendId);
-        if (isFriendAlreadyAdded) {
-            return res.status(400).send({ message: 'Este usuário já é seu amigo.' });
-        }
-
-        user.friends.push(friend);
-        console.log(user)
-
-        await user.save();
-
-        res.status(201).send({ message: 'Amigo adicionado com sucesso.' });
+        res.status(201).send(result);
     } catch (error) {
         console.error('Erro ao adicionar o amigo:', error);
-        res.status(500).send({ message: 'Ocorreu um erro ao adicionar o amigo.', error: error.message });
+        res.status(500).send({ message: error.message });
     }
 };
 
+const addPostToFavorites = async (req, res) => {
+    try {
+        const { postId, userId } = req.body;
+        const result = await userService.addRemovePostToFavoritesService(postId, userId);
 
+        res.status(200).send(result);
+    } catch (error) {
+        console.error('Erro ao adicionar/remover dos favoritos:', error);
+        res.status(500).send({ message: error.message });
+    }
+};
 
+const findAllFriends = async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const result = await userService.findAllFriendsService(userId);
 
+        res.status(200).send(result);
+    } catch (error) {
+        console.error('Erro ao encontrar amigos:', error);
+        res.status(500).send({ message: error.message });
+    }
+};
 
-module.exports = { create, findAllUsers, findById, findByUsername, update, addFriend};
+const removeFriend = async (req, res) => {
+    try {
+        const { userId, friendId } = req.body;
+
+        const result = await userService.removeFriendService(userId, friendId);
+
+        res.status(200).send(result);
+    } catch (error) {
+        console.error('Erro ao remover amigo:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao remover o amigo.', error: error.message });
+    }
+};
+
+const findCommonFriends = async (req, res) => {
+    try {
+        const { userId, friendId } = req.body;
+
+        const commonFriends = await userService.findCommonFriendsService(userId, friendId);
+
+        res.status(200).send({ commonFriends });
+    } catch (error) {
+        console.error('Erro ao encontrar amigos em comum:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao encontrar amigos em comum.', error: error.message });
+    }
+};
+
+const recommendFriends = async (req, res) => {
+    try {
+        const { userId, friendId } = req.body;
+        const commonFriends = await userService.findCommonFriendsService(userId, friendId);
+        const quantFriends = commonFriends.length                                             //Quantidade de amigos em comum (usar para sistema de recomendação)
+        res.status(200).send({ commonFriends,quantFriends });
+    } catch (error) {
+        console.error('Erro ao encontrar amigos em comum:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao encontrar amigos em comum.', error: error.message });
+    }
+}
+module.exports = { create, findAllUsers, findById, findByUsername, updateUser, addFriend, addPostToFavorites, findAllFriends, removeFriend, findCommonFriends, recommendFriends };
