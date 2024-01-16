@@ -1,8 +1,9 @@
 const postService = require("../services/post.service");
+const message = require("../services/messageErrorConfirm.service")
 
 const createPost = async (req, res, next) => {
     try {
-        
+
         const { text, id_user, username } = req.body;
 
         if (!text || !id_user) {
@@ -28,7 +29,7 @@ const findAllPosts = async (req, res) => {
         const posts = await postService.findAllServices();
 
         if (posts.length === 0) {
-            return res.status(404).send({ message: "Não há posts registrados" });
+            return res.status(404).send({ message: message.postNotFound });
         }
 
         res.send(posts);
@@ -49,7 +50,7 @@ const findById = async (req, res) => {
         const post = await postService.findByIdService(postId);
 
         if (!post) {
-            return res.status(404).send({ message: 'Postagem não encontrada.' });
+            return res.status(404).send({ message: message.postNotFound });
         }
 
         res.send(post);
@@ -68,7 +69,7 @@ const findByUsername = async (req, res) => {
         const body = { username };
         const userPosts = await postService.findByUsernameService(body);
         if (!userPosts || userPosts.length === 0) {
-            return res.status(404).send({ message: `Não há posts para o usuário ${username}` });
+            return res.status(404).send({ message: message.userPostNotFound,username});
         }
         res.send(userPosts);
     } catch (error) {
@@ -85,7 +86,7 @@ const addCommentToPost = async (req, res) => {
         const post = await postService.findByIdService(postId);
 
         if (!post) {
-            return res.status(404).send({ message: 'Postagem não encontrada.' });
+            return res.status(404).send({ message: message.postNotFound });
         }
 
         const newComment = {
@@ -111,7 +112,7 @@ const toggleLikeOnPost = async (req, res) => {
         const post = await postService.findByIdService(postId);
 
         if (!post) {
-            return res.status(404).send({ message: 'Postagem não encontrada.' });
+            return res.status(404).send({ message: message.postNotFound });
         }
 
         if (liked) {
@@ -128,6 +129,29 @@ const toggleLikeOnPost = async (req, res) => {
     }
 };
 
+const deletePost = async (req, res) => {
+    try {
+        const { postId, userId, userIdPost } = req.body;
+
+        if (userId !== userIdPost) {
+            throw new Error("Usuário não tem permissão para realizar esta ação");
+        }
+
+        const existingPost = await postService.findByIdService(postId);
+
+        if (!existingPost) {
+            return res.status(404).send({ message: message.postNotFound });
+        }
+
+        await postService.deletePostById(postId);
+
+        res.status(200).send({ message: 'Postagem removida com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao excluir postagem:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao excluir a postagem.', error: error.message });
+    }
+};
 
 
-module.exports = { createPost, findAllPosts,findById, findByUsername, addCommentToPost, toggleLikeOnPost };
+
+module.exports = { createPost, findAllPosts, findById, findByUsername, addCommentToPost, toggleLikeOnPost, deletePost };

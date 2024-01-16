@@ -1,4 +1,5 @@
 const userService = require('../services/user.service');
+const message = require("../services/messageErrorConfirm.service")
 
 const create = async (req, res) => {
     try {
@@ -38,7 +39,7 @@ const findAllUsers = async (req, res) => {
         const users = await userService.findAllServices();
 
         if (users.length === 0) {
-            return res.status(404).send({ message: "Não há usuários cadastrados" });
+            return res.status(404).send({ message: message.userNotFound });
         }
 
         res.send(users);
@@ -141,28 +142,52 @@ const removeFriend = async (req, res) => {
     }
 };
 
-const findCommonFriends = async (req, res) => {
-    try {
-        const { userId, friendId } = req.body;
-
-        const commonFriends = await userService.findCommonFriendsService(userId, friendId);
-
-        res.status(200).send({ commonFriends });
-    } catch (error) {
-        console.error('Erro ao encontrar amigos em comum:', error);
-        res.status(500).send({ message: 'Ocorreu um erro ao encontrar amigos em comum.', error: error.message });
-    }
-};
-
 const recommendFriends = async (req, res) => {
     try {
         const { userId, friendId } = req.body;
         const commonFriends = await userService.findCommonFriendsService(userId, friendId);
-        const quantFriends = commonFriends.length                                             //Quantidade de amigos em comum (usar para sistema de recomendação)
-        res.status(200).send({ commonFriends,quantFriends });
+        const quantFriendsCommon = commonFriends.length; // Quantidade de amigos em comum (usar para sistema de recomendação)
+
+        res.status(200).json({ commonFriends, quantFriendsCommon });
     } catch (error) {
         console.error('Erro ao encontrar amigos em comum:', error);
-        res.status(500).send({ message: 'Ocorreu um erro ao encontrar amigos em comum.', error: error.message });
+        res.status(500).json({ message: 'Ocorreu um erro ao encontrar amigos em comum.', error: error.message });
     }
-}
-module.exports = { create, findAllUsers, findById, findByUsername, updateUser, addFriend, addPostToFavorites, findAllFriends, removeFriend, findCommonFriends, recommendFriends };
+};
+
+const promoteToModerator = async (req, res) => {
+    try {
+        const papel = "moderador"
+        const {userId} = req.body;
+        
+        const user = userId
+
+        const result = await userService.promoteToModeratorService(user);
+
+        if (result.success) {
+            res.status(200).send({ message: message.addedRole, papel });
+        } else {
+            res.status(404).send({ message: result.message });
+        }
+    } catch (error) {
+        console.error('Erro no controlador ao promover usuário a moderador:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao processar a solicitação.' });
+    }
+};
+
+
+
+
+module.exports = {
+    create,
+    findAllUsers,
+    findById,
+    findByUsername,
+    updateUser,
+    addFriend,
+    addPostToFavorites,
+    findAllFriends,
+    removeFriend,
+    recommendFriends,
+    promoteToModerator
+};

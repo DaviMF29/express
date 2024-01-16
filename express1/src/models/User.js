@@ -18,23 +18,29 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        select:false
+        select: false
     },
     friends: [
         {
             username: {
-                type: String 
+                type: String
             }
         }
     ],
-    favoritePosts:[{
-        posts :{
-            type:Object
+    favoritePosts: [{
+        posts: {
+            type: Object
         }
-    }]
+    }],
+    role: {
+        type: String,
+        enum: ['user', 'moderator'],
+        default: 'user'
+    }
+
 });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
     }
@@ -42,5 +48,5 @@ userSchema.pre("save", async function(next) {
 });
 
 
-const User = mongoose.model("User", userSchema); 
+const User = mongoose.model("User", userSchema);
 module.exports = User;

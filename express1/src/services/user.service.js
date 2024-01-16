@@ -1,9 +1,9 @@
 const User = require("../models/User");
+const message = require("./messageErrorConfirm.service")
 
 const create = async (body) => {
     return User.create(body);
 };
-
 
 const findAllServices = () => {
     return User.find()
@@ -30,7 +30,7 @@ const findFriendByIdService = async (id) => {
         const user = await findByIdService(id);
 
         if (!user) {
-            return { success: false, error: 'Usuário não encontrado' };
+            return { success: false, message: message.userNotFound };
         }
 
         const friends = user.friends || [];
@@ -48,8 +48,7 @@ const findCommonFriendsService = async (userId, friendId) => {
         const user2 = await findByIdService(friendId);
 
         if (!user1 || !user2) {
-            console.log('Usuário não encontrado.');
-            return [];
+            return res.status(404).send({ message: message.userNotFound });
         }
 
 
@@ -71,29 +70,39 @@ const removeFriendService = async (userId, friendId) => {
         const user2 = await findByIdService(friendId);
 
         if (!user1 || !user2) {
-            throw new Error('Usuário não encontrado.');
+            return res.status(404).send({ message: message.userNotFound });
         }
 
         const isFriendAdded = user1.friends.some(friend => friend.username === user2.username);
 
         if (isFriendAdded) {
             user1.friends = user1.friends.filter(friend => friend.username !== user2.username);
-            await user1.save();
-        }
 
-        return { message: 'Amigo removido com sucesso.' };
+            const isFriendAddedBack = user2.friends.some(friend => friend.username === user1.username);
+            if (isFriendAddedBack) {
+                user2.friends = user2.friends.filter(friend => friend.username !== user1.username);
+                await user2.save();
+            }
+
+            await user1.save();
+
+            return { message: 'Amizade removida com sucesso.' };
+        } else {
+            throw new Error('Esses usuários não são amigos.');
+        }
     } catch (error) {
         console.error('Erro ao remover amigo no serviço:', error);
-        throw new Error('Ocorreu um erro ao remover o amigo.');
+        throw new Error('Ocorreu um erro ao remover a amizade.');
     }
 };
+
 
 const findAllFriendsService = async (userId) => {
     try {
         const user = await findFriendByIdService(userId);
 
         if (!user) {
-            throw new Error('Usuário não encontrado.');
+            return res.status(404).send({ message: message.userNotFound });
         }
 
         const friends = user.friends;
@@ -110,7 +119,7 @@ const addRemovePostToFavoritesService = async (postId, userId) => {
         const user = await findByIdService(userId);
 
         if (!user) {
-            throw new Error('Usuário não encontrado.');
+            return res.status(404).send({ message: message.userNotFound });
         }
 
         const index = user.favoritePosts.indexOf(postId);
@@ -136,7 +145,7 @@ const addFriendService = async (userId, friendId) => {
         const friend = await findByIdService(friendId);
 
         if (!user || !friend) {
-            throw new Error('Usuário ou amigo não encontrado.');
+            return res.status(404).send({ message: message.userNotFound });
         }
 
         const isFriendAlreadyAdded = user.friends.some(f => f.username === friend.username);
@@ -145,8 +154,13 @@ const addFriendService = async (userId, friendId) => {
             throw new Error('Este usuário já é seu amigo.');
         }
 
+        // Adicionar amigo ao usuário
         user.friends.push({ username: friend.username });
-        await user.save();
+
+        // Adicionar usuário ao amigo (tornar amizade bidirecional)
+        friend.friends.push({ username: user.username });
+
+        await Promise.all([user.save(), friend.save()]);
 
         return { message: 'Amigo adicionado com sucesso.' };
     } catch (error) {
@@ -154,6 +168,32 @@ const addFriendService = async (userId, friendId) => {
         throw new Error('Ocorreu um erro ao adicionar o amigo. Por favor, tente novamente mais tarde.');
     }
 };
+
+const promoteToModeratorService = async (userId) => {
+    try {
+        
+        const user = await findByIdService(userId);
+        if (!user) {
+            return { success: false, message: message.userNotFound };
+        }
+
+        /*if (user.role ==="moderator") {
+            return { success: true, message: 'Usuário já tem um papel atribuído.' };   Não sei por que não está funcionando
+
+        }*/
+
+        user.role = 'moderator';
+        await user.save();
+
+        return { success: true, message: 'Usuário promovido a moderador com sucesso.' };
+    } catch (error) {
+        console.error('Erro ao promover usuário a moderador:', error);
+        return { success: false, message: 'Ocorreu um erro ao promover o usuário a moderador.' };
+    }
+};
+
+
+
 module.exports = {
     create,
     findAllServices,
@@ -166,4 +206,5 @@ module.exports = {
     findAllFriendsService,
     addRemovePostToFavoritesService,
     addFriendService,
+    promoteToModeratorService,
 };

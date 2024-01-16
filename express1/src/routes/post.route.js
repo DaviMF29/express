@@ -10,5 +10,6 @@ route.get("/:id",authMiddleware, postController.findById);
 route.get("/feed",authMiddleware, postController.findByUsername);
 route.post("/comentario",authMiddleware, postController.addCommentToPost);
 route.post("/curtida",authMiddleware, postController.toggleLikeOnPost);
+route.delete("/delete",postController.deletePost)
 
 module.exports = route;

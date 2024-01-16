@@ -22,5 +22,9 @@ const findByUsernameService = async (body) => {
     }
 };
 
+const deletePostById = async (postId) => {
+    return Post.findOneAndDelete({ _id: postId });
+};
 
-module.exports = { create, findAllServices, findByUsernameService,findByIdService };
+
+module.exports = { create, findAllServices, findByUsernameService,findByIdService,deletePostById };
