@@ -171,26 +171,26 @@ const addFriendService = async (userId, friendId) => {
 
 const promoteToModeratorService = async (userId) => {
     try {
-        
         const user = await findByIdService(userId);
         if (!user) {
             return { success: false, message: message.userNotFound };
         }
 
-        /*if (user.role ==="moderator") {
-            return { success: true, message: 'Usuário já tem um papel atribuído.' };   Não sei por que não está funcionando
+        if (user.role === 'moderador') {
+            return { status: 200, message: 'Usuário já é moderador.' };
+        }
 
-        }*/
-
-        user.role = 'moderator';
+        user.role = 'moderador';
         await user.save();
 
-        return { success: true, message: 'Usuário promovido a moderador com sucesso.' };
+        return { status: 200, message: 'Usuário agora é moderador.' };
     } catch (error) {
         console.error('Erro ao promover usuário a moderador:', error);
         return { success: false, message: 'Ocorreu um erro ao promover o usuário a moderador.' };
     }
 };
+
+
 
 
 

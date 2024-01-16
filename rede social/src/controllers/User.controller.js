@@ -157,15 +157,15 @@ const recommendFriends = async (req, res) => {
 
 const promoteToModerator = async (req, res) => {
     try {
-        const papel = "moderador"
-        const {userId} = req.body;
-        
-        const user = userId
+        const papel = "moderador";
+        const { userId } = req.body;
 
-        const result = await userService.promoteToModeratorService(user);
+        const result = await userService.promoteToModeratorService(userId);
 
         if (result.success) {
             res.status(200).send({ message: message.addedRole, papel });
+        } else if (result.status === 200 && result.message === 'Usuário já é moderador.') {
+            res.status(200).send({ message: 'Usuário já é moderador.' });
         } else {
             res.status(404).send({ message: result.message });
         }
@@ -174,6 +174,7 @@ const promoteToModerator = async (req, res) => {
         res.status(500).send({ message: 'Ocorreu um erro ao processar a solicitação.' });
     }
 };
+
 
 
 
