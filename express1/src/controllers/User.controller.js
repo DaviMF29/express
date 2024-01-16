@@ -175,10 +175,6 @@ const promoteToModerator = async (req, res) => {
     }
 };
 
-
-
-
-
 module.exports = {
     create,
     findAllUsers,
