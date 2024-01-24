@@ -3,14 +3,19 @@ const message = require("../services/messageErrorConfirm.service")
 
 const createPost = async (req, res, next) => {
     try {
+        const userId = req.userId;
 
-        const { text, id_user, username } = req.body;
+        const { text, username } = req.body;
 
-        if (!text || !id_user) {
-            return res.status(400).send("O texto da postagem e o ID do usuário são obrigatórios.");
+        if (!text) {
+            return res.status(400).send("O texto da postagem é obrigatório.");
         }
 
-        const newPost = await postService.create({ text, id_user, username });
+        const newPost = await postService.create({
+            text,
+            id_user: userId, // Use o ID do usuário recuperado do token
+            username
+        });
 
         return res.status(201).json({
             id_user: newPost.id_user,
@@ -23,6 +28,9 @@ const createPost = async (req, res, next) => {
         res.status(500).send("Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.");
     }
 };
+
+module.exports = { createPost };
+
 
 const findAllPosts = async (req, res) => {
     try {
@@ -41,7 +49,7 @@ const findAllPosts = async (req, res) => {
 const findById = async (req, res) => {
     try {
         const post = req.post;
-        res.send(post);
+        res.send(post)
     } catch (error) {
         console.error('Erro ao buscar post por ID:', error);
         res.status(500).send({ message: "Ocorreu um erro ao buscar o post por ID" });
@@ -113,19 +121,16 @@ const toggleLikeOnPost = async (req, res) => {
 
 const deletePost = async (req, res) => {
     try {
-        const { postId, userId, userIdPost } = req.body;
+        const { userId, userIdPost } = req.body;
+        const postId = req.params.idPost;
 
-        const infoUser = findById(req.userId);
-        const isModerator = infoUser.role;
-
-        if (userId !== userIdPost || !isModerator) {
-            throw new Error("Usuário não tem permissão para realizar esta ação");
-        }
+        // O middleware validModeratorOrOwner já cuida da verificação do usuário
+        // Não é necessário mais a variável isModerator
 
         const existingPost = await postService.findByIdService(postId);
 
         if (!existingPost) {
-            return res.status(404).send({ message: message.postNotFound });
+            return res.status(404).send({ message: 'Post não encontrado' });
         }
 
         await postService.deletePostById(postId);
@@ -136,8 +141,5 @@ const deletePost = async (req, res) => {
         res.status(500).send({ message: 'Ocorreu um erro ao excluir a postagem.', error: error.message });
     }
 };
-
-
-
 
 module.exports = { createPost, findAllPosts, findById, findByUsername, addCommentToPost, toggleLikeOnPost, deletePost };

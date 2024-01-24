@@ -164,7 +164,7 @@ const promoteToModerator = async (req, res) => {
 
         if (result.success) {
             res.status(200).send({ message: message.addedRole, papel });
-        } else if (result.status === 200 && result.message === 'Usuário já é moderador.') {
+        } else if (result.alreadyModerator) {
             res.status(200).send({ message: 'Usuário já é moderador.' });
         } else {
             res.status(404).send({ message: result.message });
