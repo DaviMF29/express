@@ -11,6 +11,6 @@ const loginService = async (email) => {
     }
 };
 
-const generateToken = (id) => jwt.sign({id: id}, process.env.SECRET_JWT, {expiresIn: 86400})
+const generateToken = (id) => jwt.sign({id: id}, process.env.SECRETJWT, {expiresIn: 86400})
 
 module.exports = {loginService,generateToken}

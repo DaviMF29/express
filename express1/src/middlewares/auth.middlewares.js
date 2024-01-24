@@ -7,13 +7,16 @@ const authMiddleware = (req, res, next) => {
         const { authorization } = req.headers;
 
         if (!authorization) {
-            return res.status(401).send("Unauthorized");
+            return res.status(401).send("Unauthorized - Token not provided");
         }
 
-        const [schema, token] = authorization.split(" ")
-        console.log("TOKEN",token)
+        const [schema, token] = authorization.split(" ");
+
+        console.log("SCHEMA:", schema);
+        console.log("TOKEN:", token);
+
         if (schema !== "Bearer") {
-            return res.status(401).send("Unauthorized");
+            return res.status(401).send("Unauthorized - Invalid schema");
         }
 
         jwt.verify(token, process.env.SECRETJWT, (error, decoded) => {
@@ -23,7 +26,6 @@ const authMiddleware = (req, res, next) => {
             }
 
             req.userId = decoded.id;
-
             next();
         });
     } catch (err) {

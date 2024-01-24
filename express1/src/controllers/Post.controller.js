@@ -38,43 +38,25 @@ const findAllPosts = async (req, res) => {
         res.status(500).send({ message: "Ocorreu um erro ao buscar os posts" });
     }
 };
-
 const findById = async (req, res) => {
     try {
-        const { postId } = req.body;
-
-        if (!postId) {
-            return res.status(400).send({ message: 'O campo "postId" é obrigatório no corpo da requisição.' });
-        }
-
-        const post = await postService.findByIdService(postId);
-
-        if (!post) {
-            return res.status(404).send({ message: message.postNotFound });
-        }
-
+        const post = req.post;
         res.send(post);
     } catch (error) {
-        console.error('Erro ao buscar postagem por ID:', error);
-        res.status(500).send({ message: 'Ocorreu um erro ao buscar a postagem por ID.' });
+        console.error('Erro ao buscar post por ID:', error);
+        res.status(500).send({ message: "Ocorreu um erro ao buscar o post por ID" });
     }
 };
 
 const findByUsername = async (req, res) => {
     try {
-        const { username } = req.body;
-        if (!username) {
-            return res.status(400).send({ message: 'O campo "username" é obrigatório no corpo da requisição.' });
-        }
-        const body = { username };
-        const userPosts = await postService.findByUsernameService(body);
-        if (!userPosts || userPosts.length === 0) {
-            return res.status(404).send({ message: message.userPostNotFound,username});
-        }
-        res.send(userPosts);
+        const username = req.params.username;
+        const user = await postService.findByUsernameService(username);
+
+        res.send(user);
     } catch (error) {
         console.error('Erro durante a busca por nome de usuário:', error);
-        res.status(500).send({ message: "Ocorreu um erro ao buscar os posts do usuário por nome de usuário" });
+        res.status(500).send({ message: "Ocorreu um erro ao buscar o usuário por nome de usuário" });
     }
 };
 
@@ -133,7 +115,10 @@ const deletePost = async (req, res) => {
     try {
         const { postId, userId, userIdPost } = req.body;
 
-        if (userId !== userIdPost) {
+        const infoUser = findById(req.userId);
+        const isModerator = infoUser.role;
+
+        if (userId !== userIdPost || !isModerator) {
             throw new Error("Usuário não tem permissão para realizar esta ação");
         }
 
@@ -151,6 +136,7 @@ const deletePost = async (req, res) => {
         res.status(500).send({ message: 'Ocorreu um erro ao excluir a postagem.', error: error.message });
     }
 };
+
 
 
 

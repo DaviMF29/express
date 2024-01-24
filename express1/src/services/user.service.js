@@ -63,7 +63,6 @@ const findCommonFriendsService = async (userId, friendId) => {
     }
 };
 
-
 const removeFriendService = async (userId, friendId) => {
     try {
         const user1 = await findByIdService(userId);
@@ -95,7 +94,6 @@ const removeFriendService = async (userId, friendId) => {
         throw new Error('Ocorreu um erro ao remover a amizade.');
     }
 };
-
 
 const findAllFriendsService = async (userId) => {
     try {
@@ -189,10 +187,6 @@ const promoteToModeratorService = async (userId) => {
         return { success: false, message: 'Ocorreu um erro ao promover o usuário a moderador.' };
     }
 };
-
-
-
-
 
 module.exports = {
     create,

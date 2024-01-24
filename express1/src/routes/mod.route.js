@@ -1,7 +1,7 @@
 const route = require("express").Router();
-const authController = require("../controllers/Mod.controller"); 
+const modController = require("../controllers/Mod.controller"); 7
+const {validModerator} = require("../middlewares/global.middlewares")
 
 
-route.post("/", authController.login);
 
 module.exports = route; 
