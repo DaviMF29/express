@@ -1,5 +1,5 @@
 const route = require("express").Router();
-const modController = require("../controllers/Mod.controller"); 7
+const modController = require("../controllers/Warning.controller"); 
 const {validModerator} = require("../middlewares/global.middlewares")
 
 

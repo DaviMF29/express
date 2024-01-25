@@ -2,7 +2,7 @@ const express = require("express");
 const route = express.Router();
 const postController = require('../controllers/Post.controller');
 const { authMiddleware } = require('../middlewares/auth.middlewares');
-const { validPostId,validModeratorOrOwner} = require('../middlewares/global.middlewares');
+const { validPostId, checkModerator,checkPostOwner,validModeratorOrOwner} = require('../middlewares/global.middlewares');
 
 
 route.post("/",authMiddleware, postController.createPost);

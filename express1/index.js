@@ -6,6 +6,7 @@ const userRoute = require('./src/routes/user.route')
 const authRoute = require('./src/routes/auth.route')
 const postRoute = require('./src/routes/post.route')
 const modRoute = require('./src/routes/mod.route')
+const warningRoute = require('./src/routes/warning.route')
 
 dotenv.config()
 
@@ -18,4 +19,5 @@ app.use("/user",userRoute)
 app.use("/auth",authRoute)
 app.use("/post",postRoute)
 app.use("/mod",modRoute)
+app.user("/warning",warningRoute)
 app.listen(port,()=> console.log(`Servidor rodando na porta ${port}`))

@@ -29,9 +29,6 @@ const createPost = async (req, res, next) => {
     }
 };
 
-module.exports = { createPost };
-
-
 const findAllPosts = async (req, res) => {
     try {
         const posts = await postService.findAllServices();
@@ -125,7 +122,6 @@ const deletePost = async (req, res) => {
         const postId = req.params.idPost;
 
         // O middleware validModeratorOrOwner já cuida da verificação do usuário
-        // Não é necessário mais a variável isModerator
 
         const existingPost = await postService.findByIdService(postId);
 

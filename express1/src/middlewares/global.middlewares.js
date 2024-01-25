@@ -57,6 +57,29 @@ const validUsername = async (req, res, next) => {
     next();
 };
 
+const checkModerator = async (req, res, next) => {
+    try {
+        const userId = req.body.userId;
+
+        const user = await userService.findByIdService(userId);
+
+        if (!user) {
+            return res.status(404).send({ message: "Usuário não encontrado" });
+        }
+
+        if (user.role === "moderador") {
+            next();
+        } else {
+            return res.status(403).send({ message: "Usuário não tem permissão para realizar esta ação" });
+        }
+    } catch (error) {
+        console.error('Erro no middleware checkModerator:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao processar a solicitação.' });
+    }
+};
+
+
+
 const validModeratorOrOwner = async (req, res, next) => {
     try {
         const userId = req.body.userId; 
@@ -80,8 +103,8 @@ const validModeratorOrOwner = async (req, res, next) => {
     }
 };
 
-module.exports = validModeratorOrOwner;
+
+module.exports = { validId, validUser, validUsername, checkModerator,validModeratorOrOwner,validPostId }
 
 
 
-module.exports = { validId, validUser, validUsername, validModeratorOrOwner,validPostId }
