@@ -43,6 +43,7 @@ const findAllPosts = async (req, res) => {
         res.status(500).send({ message: "Ocorreu um erro ao buscar os posts" });
     }
 };
+
 const findById = async (req, res) => {
     try {
         const post = req.post;
@@ -64,7 +65,6 @@ const findByUsername = async (req, res) => {
         res.status(500).send({ message: "Ocorreu um erro ao buscar o usuário por nome de usuário" });
     }
 };
-
 
 const addCommentToPost = async (req, res) => {
     try {

@@ -59,7 +59,8 @@ const validUsername = async (req, res, next) => {
 
 const checkModerator = async (req, res, next) => {
     try {
-        const userId = req.body.userId;
+        // Extrai o userId do req após passar pelo middleware de autenticação
+        const userId = req.userId;
 
         const user = await userService.findByIdService(userId);
 
@@ -68,6 +69,7 @@ const checkModerator = async (req, res, next) => {
         }
 
         if (user.role === "moderador") {
+            // Se o usuário for moderador, continua para a próxima rota/middleware
             next();
         } else {
             return res.status(403).send({ message: "Usuário não tem permissão para realizar esta ação" });
@@ -77,8 +79,6 @@ const checkModerator = async (req, res, next) => {
         res.status(500).send({ message: 'Ocorreu um erro ao processar a solicitação.' });
     }
 };
-
-
 
 const validModeratorOrOwner = async (req, res, next) => {
     try {
