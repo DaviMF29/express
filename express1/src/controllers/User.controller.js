@@ -177,13 +177,8 @@ const promoteToModerator = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = req;
 
-        if (!userId) {
-            return res.status(404).send({ message: 'Usuário não encontrado' });
-        }
-
-        // Aqui você deve chamar a função para excluir o usuário usando userId
         await userService.deleteUserById(userId);
 
         res.status(200).send({ message: 'Usuário deletado com sucesso.' });
@@ -192,6 +187,7 @@ const deleteUser = async (req, res) => {
         res.status(500).send({ message: 'Ocorreu um erro ao excluir o usuário.', error: error.message });
     }
 };
+
 
 
 module.exports = {

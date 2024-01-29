@@ -1,6 +1,6 @@
 const route = require("express").Router();
 const userController = require('../controllers/User.controller');
-const { validId, validUser, validUsername } = require('../middlewares/global.middlewares');
+const { validId, validUser, validUsername,checkUser } = require('../middlewares/global.middlewares');
 
 route.post("/", userController.create);
 route.get("/", userController.findAllUsers);
@@ -13,6 +13,6 @@ route.post("/friends",userController.findAllFriends)
 route.post("/removeFriend",userController.removeFriend)
 route.post("/friendRecommended",userController.recommendFriends)
 route.post("/promoveToModerator",userController.promoteToModerator)
-route.delete("/delete",userController.deleteUser)
+route.delete("/delete",checkUser,userController.deleteUser)
 
 module.exports = route;

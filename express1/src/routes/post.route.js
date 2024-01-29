@@ -12,5 +12,6 @@ route.get("/search/:username", postController.findByUsername);
 route.post("/comentario",authMiddleware, postController.addCommentToPost);
 route.post("/curtida",authMiddleware, postController.toggleLikeOnPost);
 route.delete("/delete/:idPost",authMiddleware,validModeratorOrOwner,postController.deletePost)
+route.delete("/deleteall/:userId",postController.deleteAllPostsByUserId)
 
 module.exports = route;

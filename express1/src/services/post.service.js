@@ -26,5 +26,8 @@ const deletePostById = async (postId) => {
     return Post.findOneAndDelete({ _id: postId });
 };
 
+const deleteAllPostsByUserId = async (userId) =>{
+    return Post.deleteMany({id_user: userId})
+}
 
-module.exports = { create, findAllServices, findByUsernameService,findByIdService,deletePostById };
+module.exports = { create, findAllServices, findByUsernameService,findByIdService,deletePostById,deleteAllPostsByUserId};

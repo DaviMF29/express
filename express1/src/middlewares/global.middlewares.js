@@ -1,6 +1,4 @@
 const mongoose = require("mongoose")
-const multer = require('multer');
-
 const userService = require('../services/user.service')
 const postService = require('../services/post.service')
 
@@ -106,7 +104,18 @@ const validModeratorOrOwner = async (req, res, next) => {
 };
 
 
-module.exports = { validId, validUser, validUsername, checkModerator,validModeratorOrOwner,validPostId }
+const checkUser = (req, res, next) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(404).send({ message: 'Usuário não encontrado' });
+    }
+
+    req.userId = userId; 
+    next();
+};
+
+module.exports = { validId, validUser, validUsername,checkUser, checkModerator,validModeratorOrOwner,validPostId }
 
 
 

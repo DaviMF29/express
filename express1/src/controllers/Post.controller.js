@@ -138,4 +138,23 @@ const deletePost = async (req, res) => {
     }
 };
 
-module.exports = { createPost, findAllPosts, findById, findByUsername, addCommentToPost, toggleLikeOnPost, deletePost };
+const deleteAllPostsByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const result = await postService.deleteAllPostsByUserId(userId)
+
+        if (result.deletedCount > 0) {
+            console.log(`${result.deletedCount} posts foram excluídos.`);
+            res.status(200).send({ message: 'Posts excluídos com sucesso.' });
+        } else {
+            console.log('Nenhum post encontrado para exclusão.');
+            res.status(404).send({ message: 'Nenhum post desde usuário encontrado para exclusão.' });
+        }
+    } catch (error) {
+        console.error('Erro ao excluir posts:', error);
+        res.status(500).send({ message: 'Ocorreu um erro ao excluir os posts.', error: error.message });
+    }
+};
+
+module.exports = { createPost, findAllPosts, findById, findByUsername, addCommentToPost, toggleLikeOnPost, deletePost,deleteAllPostsByUserId };
