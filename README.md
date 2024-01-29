@@ -15,9 +15,13 @@ Bem-vindo ao projeto! Este projeto é uma API para uma rede social simples, perm
 
 4. **Exclusão de Usuários e Posts Associados:**
    - Exclusão de usuários resulta na exclusão automática de todos os posts associados a esse usuário.
-   - 
-4. **Criaçção de avisos:**
+     
+5. **Criação de avisos:**
    - Criação de avisos que podem ser usados na fase beta da rede social.
+
+6. **Criação do sistema de moderação:**
+   - Apagar posts que possam ferir pessoas/leis
+   - Criação de avisos   
    
 
 ## Estrutura do Projeto
