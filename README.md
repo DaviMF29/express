@@ -35,9 +35,9 @@ Bem-vindo ao projeto! Este projeto é uma API para uma rede social simples, perm
    npm install
 
 ## End Points
-**/user**
-**/auth**
-**/post**
-**/mod**
-**/warning**
+- **/user**
+- **/auth**
+- **/post**
+- **/mod**
+- **/warning**
    
