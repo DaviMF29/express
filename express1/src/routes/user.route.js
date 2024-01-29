@@ -13,5 +13,6 @@ route.post("/friends",userController.findAllFriends)
 route.post("/removeFriend",userController.removeFriend)
 route.post("/friendRecommended",userController.recommendFriends)
 route.post("/promoveToModerator",userController.promoteToModerator)
+route.delete("/delete",userController.deleteUser)
 
 module.exports = route;

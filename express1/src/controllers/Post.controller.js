@@ -129,7 +129,7 @@ const deletePost = async (req, res) => {
             return res.status(404).send({ message: 'Post não encontrado' });
         }
 
-        await postService.deletePostById(postId);
+        await postService.deleteUserById(postId);
 
         res.status(200).send({ message: 'Postagem removida com sucesso.' });
     } catch (error) {

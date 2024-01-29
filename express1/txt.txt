@@ -20,3 +20,51 @@ const checkPostOwner = async (req, res, next) => {
         res.status(500).send({ message: 'Ocorreu um erro ao processar a solicitação.' });
     }
 };
+
+
+const createPost = async (req, res, next) => {
+    try {
+        const userId = req.userId;
+        const { text, username } = req.body;
+
+        // Verifica se um arquivo de imagem foi enviado na requisição
+        if (req.files && req.files.length > 0) {
+            // Se há imagens, lida com a lógica de upload e salva os caminhos
+            const imagePaths = req.files.map(file => file.path);
+            // Adicione a lógica para salvar os arquivos no local desejado
+
+            // Adiciona a postagem ao banco de dados, incluindo os caminhos das imagens
+            const newPost = await postService.create({
+                text,
+                id_user: userId,
+                username,
+                imagePaths
+            });
+
+            return res.status(201).json({
+                id_user: newPost.id_user,
+                username: newPost.username,
+                id: newPost._id,
+                text: newPost.text,
+                imagePaths: newPost.imagePaths
+            });
+        }
+
+        // Se não houver imagens, cria uma postagem apenas com texto
+        const newPost = await postService.create({
+            text,
+            id_user: userId,
+            username
+        });
+
+        return res.status(201).json({
+            id_user: newPost.id_user,
+            username: newPost.username,
+            id: newPost._id,
+            text: newPost.text
+        });
+    } catch (error) {
+        console.error("Erro durante a postagem:", error);
+        res.status(500).send("Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.");
+    }
+};

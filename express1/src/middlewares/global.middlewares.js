@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+const multer = require('multer');
+
 const userService = require('../services/user.service')
 const postService = require('../services/post.service')
 

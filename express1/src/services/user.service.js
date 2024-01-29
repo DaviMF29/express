@@ -189,6 +189,11 @@ const promoteToModeratorService = async (userId) => {
     }
 };
 
+const deleteUserById = async (userId) => {
+    return User.findOneAndDelete({ _id: userId });
+};
+
+
 module.exports = {
     create,
     findAllServices,
@@ -202,4 +207,5 @@ module.exports = {
     addRemovePostToFavoritesService,
     addFriendService,
     promoteToModeratorService,
+    deleteUserById,
 };
