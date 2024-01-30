@@ -46,4 +46,5 @@ Bem-vindo ao projeto! Este projeto é uma API para uma rede social simples, perm
 - **/post**
 - **/mod**
 - **/warning**
+- **/notification**
    
