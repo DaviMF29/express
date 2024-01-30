@@ -47,4 +47,8 @@ Bem-vindo ao projeto! Este projeto é uma API para uma rede social simples, perm
 - **/mod**
 - **/warning**
 - **/notification**
-   
+
+
+
+## Observação
+   Muitas rotas não estão autenticadas para facilitar na hora de testar as rotas
