@@ -22,7 +22,9 @@ Bem-vindo ao projeto! Este projeto é uma API para uma rede social simples, perm
 6. **Criação do sistema de moderação:**
    - Apagar posts que possam ferir pessoas/leis
    - Criação de avisos   
-   
+7. **Central de notificações para usuários:**
+   - Criação de schema que controla o tipo de notificação ['follow', 'like', 'comment']
+   - Mudança de status da leitura de notificações pelo usuário   
 
 ## Estrutura do Projeto
 
