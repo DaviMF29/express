@@ -1,7 +1,7 @@
 const postService = require("../services/post.service");
 const message = require("../services/messageErrorConfirm.service")
 
-const createPost = async (req, res, next) => {
+const createPost = async (req, res) => {
     try {
         const userId = req.userId;
 
@@ -157,4 +157,14 @@ const deleteAllPostsByUserId = async (req, res) => {
     }
 };
 
-module.exports = { createPost, findAllPosts, findById, findByUsername, addCommentToPost, toggleLikeOnPost, deletePost,deleteAllPostsByUserId };
+module.exports =
+{
+    createPost,
+    findAllPosts,
+    findById,
+    findByUsername,
+    addCommentToPost,
+    toggleLikeOnPost,
+    deletePost,
+    deleteAllPostsByUserId
+};

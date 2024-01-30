@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const userService = require('../services/user.service')
 const postService = require('../services/post.service')
+const notificationService = require('../services/notification.service')
 
 const validId = (req, res, next) => {
     const id = req.params.id
@@ -21,7 +22,7 @@ const validPostId = async (req, res, next) => {
         if (!post) {
             return res.status(404).send({ message: "Post não encontrado" });
         }
-        req.post = post; 
+        req.post = post;
         next();
     } catch (error) {
         console.error('Erro ao buscar post por ID:', error);
@@ -82,7 +83,7 @@ const checkModerator = async (req, res, next) => {
 
 const validModeratorOrOwner = async (req, res, next) => {
     try {
-        const userId = req.body.userId; 
+        const userId = req.body.userId;
         const postId = req.params.idPost;
 
         const user = await userService.findByIdService(userId);
@@ -111,11 +112,39 @@ const checkUser = (req, res, next) => {
         return res.status(404).send({ message: 'Usuário não encontrado' });
     }
 
-    req.userId = userId; 
+    req.userId = userId;
     next();
 };
 
-module.exports = { validId, validUser, validUsername,checkUser, checkModerator,validModeratorOrOwner,validPostId }
+
+const markNotificationAsReadMiddleware = async (req, res, next) => {
+    try {
+        const { notificationId } = req.params;
+        const updatedNotification = await notificationService.markNotificationAsRead(notificationId);
+
+        req.updatedNotification = updatedNotification;
+
+        next();
+    } catch (error) {
+        console.error('Erro no middleware markNotificationAsReadMiddleware:', error);
+        res.status(500).send('Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.');
+    }
+};
+
+
+
+
+module.exports =
+{
+    validId,
+    validUser,
+    validUsername,
+    checkUser,
+    checkModerator,
+    validModeratorOrOwner,
+    validPostId,
+    markNotificationAsReadMiddleware
+}
 
 
 
