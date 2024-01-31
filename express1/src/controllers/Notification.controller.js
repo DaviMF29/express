@@ -40,7 +40,7 @@ module.exports = { createNotification };
 
 const findAllNotificationsFromUser = async (req, res) => {
     try {
-        const userId = req.userId;
+        const userId = req.params.userId;
         if (!userId) {
             return res.status(400).send("Usuário não encontrado");
         }

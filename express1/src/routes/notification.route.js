@@ -6,6 +6,7 @@ const { markNotificationAsReadMiddleware } = require("../middlewares/global.midd
 
 
 route.get("/", notificationController.findAllNotifications)
+route.get("/:userId",notificationController.findAllNotificationsFromUser)
 route.post("/", notificationController.createNotification);
 route.put("/updateisread/:notificationId",markNotificationAsReadMiddleware,notificationController.markAsRead)
 
